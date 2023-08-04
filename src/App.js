@@ -1,9 +1,32 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import "./App.css";
 
+const initialStates = {
+  weight: 40,
+  height: 140,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "weight":
+      return { ...state, weight: action.payload };
+    case "height":
+      return { ...state, height: action.payload };
+    default:
+      throw new Error("Unknown error");
+  }
+}
+
 function App() {
-  const [weight, setWeight] = useState(40);
-  const [height, setHeight] = useState(140);
+  const [state, dispatch] = useReducer(reducer, initialStates);
+  const { weight, height } = state;
+
+  function setWeight(e) {
+    dispatch({ type: "weight", payload: Number(e.target.value) });
+  }
+  function setHeight(e) {
+    dispatch({ type: "height", payload: Number(e.target.value) });
+  }
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
@@ -38,7 +61,7 @@ function Counter({ handleWeight, weight, height, handleHeight }) {
         <h3>Weight: {weight} kg</h3>
         <input
           value={weight}
-          onChange={(e) => handleWeight(Number(e.target.value))}
+          onChange={handleWeight}
           type="range"
           step={1}
           min={40}
@@ -48,7 +71,7 @@ function Counter({ handleWeight, weight, height, handleHeight }) {
         <h3>Height: {height} cm</h3>
         <input
           value={height}
-          onChange={(e) => handleHeight(Number(e.target.value))}
+          onChange={handleHeight}
           type="range"
           step={1}
           min={140}
